@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LADO BRAIN 2.0 — Визуальная структура</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: #0a0a0f;
+  color: #e0e0e0;
+  line-height: 1.6;
+  padding: 20px;
+}
+.header {
+  text-align: center;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 16px;
+  margin-bottom: 30px;
+  border: 1px solid #2a2a4a;
+}
+.header h1 {
+  font-size: 2em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.header p {
+  color: #8892b0;
+  font-size: 1.1em;
+}
+.legend {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+}
+.legend-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-slava { background: #ff6b6b; }
+.dot-jim { background: #4ecdc4; }
+.dot-kerry { background: #ffe66d; }
+.dot-paul { background: #a8e6cf; }
+.dot-kimicl { background: #c7ceea; }
+.dot-project { background: #ff8b94; }
+.dot-knowledge { background: #b4a7d6; }
+
+.tree-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.folder {
+  margin: 8px 0;
+  padding-left: 20px;
+  border-left: 2px solid #2a2a4a;
+}
+.folder-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  background: #1a1a2e;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #2a2a4a;
+}
+.folder-header:hover {
+  background: #252545;
+  border-color: #3a3a6a;
+}
+.folder-icon {
+  font-size: 1.3em;
+}
+.folder-name {
+  font-weight: 600;
+  font-size: 1em;
+}
+.folder-desc {
+  color: #8892b0;
+  font-size: 0.85em;
+  margin-left: auto;
+}
+.folder-content {
+  display: none;
+  padding: 10px 0 10px 30px;
+}
+.folder-content.open {
+  display: block;
+}
+.file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 15px;
+  margin: 4px 0;
+  background: #12121f;
+  border-radius: 6px;
+  font-size: 0.9em;
+  border: 1px solid #1a1a2e;
+}
+.file:hover {
+  background: #1a1a2e;
+}
+.file-icon {
+  font-size: 1.1em;
+}
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: auto;
+}
+.tag-slava { background: #ff6b6b33; color: #ff6b6b; }
+.tag-jim { background: #4ecdc433; color: #4ecdc4; }
+.tag-kerry { background: #ffe66d33; color: #ffe66d; }
+.tag-paul { background: #a8e6cf33; color: #a8e6cf; }
+.tag-kimicl { background: #c7ceea33; color: #c7ceea; }
+.tag-project { background: #ff8b9433; color: #ff8b94; }
+
+.status-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #1a1a2e;
+  border-top: 1px solid #2a2a4a;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9em;
+}
+.status-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title {
+  font-size: 1.3em;
+  color: #fff;
+  margin: 30px 0 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #2a2a4a;
+}
+
+.note {
+  background: #1a1a2e;
+  border-left: 4px solid #ffe66d;
+  padding: 15px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95em;
+}
+.note-title {
+  font-weight: 600;
+  color: #ffe66d;
+  margin-bottom: 8px;
+}
+
+.migration-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 15px;
+  background: #12121f;
+  border-radius: 8px;
+  margin: 10px 0;
+  border: 1px solid #2a2a4a;
+}
+.step-num {
+  width: 32px; height: 32px;
+  background: #3a3a6a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.step-content h4 {
+  color: #fff;
+  margin-bottom: 5px;
+}
+.step-content p {
+  color: #8892b0;
+  font-size: 0.9em;
+}
+
+input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: #4ecdc4;
+  cursor: pointer;
+}
+
+.feedback-box {
+  background: #1a1a2e;
+  border: 2px dashed #3a3a6a;
+  border-radius: 12px;
+  padding: 30px;
+  text-align: center;
+  margin: 30px 0;
+}
+.feedback-box h3 {
+  color: #c7ceea;
+  margin-bottom: 15px;
+}
+.feedback-box p {
+  color: #8892b0;
+  font-size: 0.95em;
+}
+
+.highlight {
+  background: #ff6b6b22;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #ff6b6b;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>📁 LADO BRAIN 2.0</h1>
+  <p>Новая структура хранилища знаний с разграничением данных</p>
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot dot-slava"></span> Слава (идеи)</div>
+    <div class="legend-item"><span class="legend-dot dot-jim"></span> Jim (story)</div>
+    <div class="legend-item"><span class="legend-dot dot-kerry"></span> Kerry (tech)</div>
+    <div class="legend-item"><span class="legend-dot dot-paul"></span> Paul (аналитика)</div>
+    <div class="legend-item"><span class="legend-dot dot-kimicl"></span> KimiClaw (стратегия)</div>
+    <div class="legend-item"><span class="legend-dot dot-project"></span> Проектные данные</div>
+  </div>
+</div>
+
+<div class="tree-container">
+
+<h2 class="section-title">📂 Предложенная структура</h2>
+
+<!-- 00 META -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">⚙️</span>
+    <span class="folder-name">00_META</span>
+    <span class="folder-desc">Настройки и правила хранилища</span>
+  </div>
+  <div class="folder-content">
+    <div class="file"><span class="file-icon">📄</span> README.md — Описание структуры <span class="tag tag-knowledge">META</span></div>
+    <div class="file"><span class="file-icon">📄</span> CHANGELOG.md — История изменений <span class="tag tag-knowledge">META</span></div>
+    <div class="file"><span class="file-icon">📄</span> DATA_POLICY.md — <span class="highlight">Правила атрибуции</span> <span class="tag tag-knowledge">META</span></div>
+  </div>
+</div>
+
+<!-- 10 SLAVA -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">👤</span>
+    <span class="folder-name" style="color:#ff6b6b;">10_SLAVA</span>
+    <span class="folder-desc">Только твои мысли и идеи</span>
+  </div>
+  <div class="folder-content">
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon">💡</span>
+        <span class="folder-name">IDEAS_RAW</span>
+        <span class="folder-desc">Сырые идеи</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">🎙️</span> 2026-04-22_voice_idea.md <span class="tag tag-slava">SLAVA</span></div>
+        <div class="file"><span class="file-icon">📝</span> 2026-04-22_text_note.md <span class="tag tag-slava">SLAVA</span></div>
+      </div>
+    </div>
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon">✅</span>
+        <span class="folder-name">DECISIONS</span>
+        <span class="folder-desc">Принятые решения</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> 2026-04-22_approve_structure.md <span class="tag tag-slava">SLAVA</span></div>
+      </div>
+    </div>
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon">🔭</span>
+        <span class="folder-name">VISION_2026</span>
+        <span class="folder-desc">Видение на год</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> empire_vision.md <span class="tag tag-slava">SLAVA</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 20 AGENTS -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">🤖</span>
+    <span class="folder-name">20_AGENTS</span>
+    <span class="folder-desc">Данные по каждому агенту отдельно</span>
+  </div>
+  <div class="folder-content">
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#4ecdc4;">🎭</span>
+        <span class="folder-name" style="color:#4ecdc4;">JIM</span>
+        <span class="folder-desc">Storytelling, UX, Marketing</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> MEMORY.md <span class="tag tag-jim">JIM</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">LOGS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> 2026-04-20.md <span class="tag tag-jim">JIM</span></div>
+          </div>
+        </div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">OUTPUTS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> kazantip_story.md <span class="tag tag-jim">JIM</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#ffe66d;">⚡</span>
+        <span class="folder-name" style="color:#ffe66d;">KERRY</span>
+        <span class="folder-desc">Tech, Shaders, AI Generation</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> MEMORY.md <span class="tag tag-kerry">KERRY</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">LOGS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> 2026-04-22.md <span class="tag tag-kerry">KERRY</span></div>
+            <div class="file"><span class="file-icon">📄</span> 2026-04-21.md <span class="tag tag-kerry">KERRY</span></div>
+          </div>
+        </div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">CODE</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">🐍</span> batch_generate.py <span class="tag tag-kerry">KERRY</span></div>
+            <div class="file"><span class="file-icon">🐍</span> smeta_engine.py <span class="tag tag-kerry">KERRY</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#a8e6cf;">📊</span>
+        <span class="folder-name" style="color:#a8e6cf;">PAUL</span>
+        <span class="folder-desc">Аналитика, Стратегия</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> MEMORY.md <span class="tag tag-paul">PAUL</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">OUTPUTS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> analysis_report.md <span class="tag tag-paul">PAUL</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#c7ceea;">🎯</span>
+        <span class="folder-name" style="color:#c7ceea;">KIMICLAW</span>
+        <span class="folder-desc">Критический анализ, Сценарии (я)</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> MEMORY.md <span class="tag tag-kimicl">KIMICLAW</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">ANALYSIS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> 2026-04-22_10_scenarios.md <span class="tag tag-kimicl">KIMICLAW</span></div>
+            <div class="file"><span class="file-icon">📄</span> 2026-04-22_critical_review.md <span class="tag tag-kimicl">KIMICLAW</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- 30 PROJECTS -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">📁</span>
+    <span class="folder-name">30_PROJECTS</span>
+    <span class="folder-desc">Каждый проект изолирован</span>
+  </div>
+  <div class="folder-content">
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#ff8b94;">🏗️</span>
+        <span class="folder-name" style="color:#ff8b94;">LADOPREMIUM</span>
+        <span class="folder-desc">Строительство под ключ</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> STATUS.md — Текущий статус <span class="tag tag-project">PROJECT</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">OBJECTS</span>
+            <span class="folder-desc">Объекты</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> KISLOVODSK_SERGEY_MARIA/ <span class="tag tag-project">PROJECT</span></div>
+            <div class="file"><span class="file-icon">📄</span> PYATIGORSK/ <span class="tag tag-project">PROJECT</span></div>
+            <div class="file"><span class="file-icon">📄</span> ZHELEZNOVODSK/ <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">TEAM</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">👤</span> contacts.md <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">FINANCE</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📊</span> teamly_tracking.md <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#ff8b94;">🎮</span>
+        <span class="folder-name" style="color:#ff8b94;">MYCIYQUEST</span>
+        <span class="folder-desc">AR игра (⚠️ Дедлайн: 1 мая)</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> STATUS.md <span class="tag tag-project">PROJECT</span></div>
+        <div class="file"><span class="file-icon">📄</span> ROADMAP.md <span class="tag tag-project">PROJECT</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">TASKS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> phase_1_setup.md <span class="tag tag-project">PROJECT</span></div>
+            <div class="file"><span class="file-icon">📄</span> phase_2_routes.md <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#ff8b94;">🎨</span>
+        <span class="folder-name" style="color:#ff8b94;">LADODESIGN</span>
+        <span class="folder-desc">Дизайн интерьеров</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> STATUS.md <span class="tag tag-project">PROJECT</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">CONFIGURATORS</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📊</span> calculator.xlsx <span class="tag tag-project">PROJECT</span></div>
+            <div class="file"><span class="file-icon">📊</span> pro_configurator.xlsx <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon" style="color:#ff8b94;">🌊</span>
+        <span class="folder-name" style="color:#ff8b94;">KAZANTIP</span>
+        <span class="folder-desc">Фестиваль (Phase 1: Signal)</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> STATUS.md <span class="tag tag-project">PROJECT</span></div>
+        <div class="folder">
+          <div class="folder-header" onclick="toggle(this)">
+            <span class="folder-icon">📁</span>
+            <span class="folder-name">SIGNAL</span>
+          </div>
+          <div class="folder-content">
+            <div class="file"><span class="file-icon">📄</span> landing_proto.html <span class="tag tag-project">PROJECT</span></div>
+            <div class="file"><span class="file-icon">📄</span> bot_flow.md <span class="tag tag-project">PROJECT</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- 40 KNOWLEDGE -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">📚</span>
+    <span class="folder-name">40_KNOWLEDGE</span>
+    <span class="folder-desc">Общая база знаний</span>
+  </div>
+  <div class="folder-content">
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">STANDARDS</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> visual_kazantip_style.md <span class="tag tag-knowledge">KNOWLEDGE</span></div>
+        <div class="file"><span class="file-icon">📄</span> visual_ladodesign_wabisabi.md <span class="tag tag-knowledge">KNOWLEDGE</span></div>
+      </div>
+    </div>
+    <div class="folder">
+      <div class="folder-header" onclick="toggle(this)">
+        <span class="folder-icon">📁</span>
+        <span class="folder-name">SOPs</span>
+      </div>
+      <div class="folder-content">
+        <div class="file"><span class="file-icon">📄</span> construction_qc.md <span class="tag tag-knowledge">KNOWLEDGE</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 60 ARCHIVE -->
+<div class="folder">
+  <div class="folder-header" onclick="toggle(this)">
+    <span class="folder-icon">📦</span>
+    <span class="folder-name">60_ARCHIVE</span>
+    <span class="folder-desc">Архив завершенного</span>
+  </div>
+  <div class="folder-content">
+    <div class="file"><span class="file-icon">📁</span> 2026_Q1/ <span class="tag tag-knowledge">ARCHIVE</span></div>
+  </div>
+</div>
+
+<div class="note">
+  <div class="note-title">⚡ Ключевое правило атрибуции</div>
+  Каждый файл начинается с frontmatter:
+  <pre style="background:#0a0a0f; padding:10px; border-radius:6px; margin-top:10px; font-size:0.85em;">
+---
+author: [SLAVA | JIM | KERRY | PAUL | KIMICLAW]
+date: 2026-04-22
+project: [LADOPREMIUM | MYCIYQUEST | ...]
+type: [IDEA | ANALYSIS | TASK | OUTPUT]
+---</pre>
+</div>
+
+<h2 class="section-title">🔄 План миграции</h2>
+
+<div class="migration-step">
+  <div class="step-num">1</div>
+  <div class="step-content">
+    <h4>Создание структуры (1 день)</h4>
+    <p>Создать все директории, настроить шаблоны frontmatter, README</p>
+    <input type="checkbox"> Одобрено
+  </div>
+</div>
+
+<div class="migration-step">
+  <div class="step-num">2</div>
+  <div class="step-content">
+    <h4>Разбор существующих данных (3 дня)</h4>
+    <p>Разобрать vault Kerry и файлы Paul по новым папкам с атрибуцией</p>
+    <input type="checkbox"> Одобрено
+  </div>
+</div>
+
+<div class="migration-step">
+  <div class="step-num">3</div>
+  <div class="step-content">
+    <h4>Настройка синхронизации (1 день)</h4>
+    <p>Git или rclone с резервным копированием</p>
+    <input type="checkbox"> Одобрено
+  </div>
+</div>
+
+<div class="migration-step">
+  <div class="step-num">4</div>
+  <div class="step-content">
+    <h4>Тестирование (2 дня)</h4>
+    <p>Прогнать полный цикл: идея → анализ → задачи → выполнение</p>
+    <input type="checkbox"> Одобрено
+  </div>
+</div>
+
+<div class="feedback-box">
+  <h3>💬 Твоя обратная связь</h3>
+  <p>Напиши мне в Telegram что изменить:<br>
+  • Лишние папки? • Недостающие разделы? • Другое разграничение?<br>
+  Я мгновенно обновлю структуру.</p>
+</div>
+
+</div>
+
+<div style="height: 80px;"></div>
+
+<div class="status-bar">
+  <div class="status-item">
+    <span style="color:#4ecdc4;">●</span> Yandex Disk: подключен
+  </div>
+  <div class="status-item">
+    <span style="color:#ff6b6b;">●</span> Kerry: synced
+  </div>
+  <div class="status-item">
+    <span style="color:#a8e6cf;">●</span> Paul: synced
+  </div>
+  <div class="status-item">
+    <span style="color:#ffe66d;">●</span> Ожидаю обратную связь
+  </div>
+</div>
+
+<script>
+function toggle(el) {
+  const content = el.nextElementSibling;
+  if (content && content.classList.contains('folder-content')) {
+    content.classList.toggle('open');
+    const icon = el.querySelector('.folder-icon');
+    if (icon) {
+      icon.textContent = content.classList.contains('open') ? '📂' : (icon.textContent === '📂' ? '📁' : icon.textContent);
+    }
+  }
+}
+</script>
+
+</body>
+</html>
