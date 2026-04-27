@@ -93,6 +93,9 @@
             border-left: 3px solid;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
         .task-card:hover {
             transform: translateY(-2px);
@@ -168,12 +171,31 @@
             padding: 40px;
             color: #ff4444;
         }
+        .edit-btn {
+            background: #2a2a4a;
+            color: #aaa;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 8px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .edit-btn:hover {
+            background: #3a3a5a;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>LADO BRAIN</h1>
         <p>Task & Project Management Dashboard</p>
+        <div style="margin-top: 10px; font-size: 12px; color: #666;">
+            Обновляется автоматически • Кликни на задачу для редактирования
+        </div>
     </div>
 
     <div class="stats" id="stats">
@@ -196,10 +218,12 @@
     </div>
 
     <div class="columns" id="columns">
-        <div class="loading">Загрузка задач...</div>
+        <div class="loading">Загрузка задач из GitHub...</div>
     </div>
 
     <script>
+        const REPO = 'Sdslava/lado-brain';
+        
         const STATUS_CONFIG = {
             backlog: { title: 'Backlog', color: '#666', icon: '📋' },
             in_progress: { title: 'In Progress', color: '#4a9eff', icon: '⚡' },
@@ -214,41 +238,104 @@
             low: 'priority-low'
         };
 
-        function getProgress(task) {
-            if (!task.subtasks || task.subtasks.length === 0) return 0;
-            const done = task.subtasks.filter(s => s.done).length;
-            return Math.round((done / task.subtasks.length) * 100);
+        function getStatusFromLabels(labels) {
+            const statusLabels = ['backlog', 'in_progress', 'review', 'done'];
+            for (const label of labels) {
+                if (statusLabels.includes(label.name)) return label.name;
+            }
+            return 'backlog';
         }
 
-        function createTaskCard(task) {
-            const progress = getProgress(task);
-            const priorityClass = PRIORITY_CLASS[task.priority] || 'priority-medium';
+        function getPriorityFromLabels(labels) {
+            const priorityLabels = ['critical', 'high', 'medium', 'low'];
+            for (const label of labels) {
+                if (priorityLabels.includes(label.name)) return label.name;
+            }
+            return 'medium';
+        }
+
+        function getProjectFromLabels(labels) {
+            const projectLabels = ['MyCityQuest', 'LadoPremium', 'LadoDesign', 'LadoCafe', 'Kazantip', 'HeyEye', 'Tripy', 'LadoArchitects'];
+            for (const label of labels) {
+                if (projectLabels.includes(label.name)) return label.name;
+            }
+            return 'General';
+        }
+
+        function parseSubtasks(body) {
+            if (!body) return [];
+            const lines = body.split('\n');
+            const subtasks = [];
+            let inSubtasks = false;
+            
+            for (const line of lines) {
+                if (line.includes('**Подзадачи:**')) {
+                    inSubtasks = true;
+                    continue;
+                }
+                if (inSubtasks && line.startsWith('**')) break;
+                if (inSubtasks && line.includes('- [')) {
+                    const done = line.includes('- [x]');
+                    const title = line.replace(/^\s*-\s*\[[x\s]\]\s*/, '');
+                    subtasks.push({ done, title });
+                }
+            }
+            return subtasks;
+        }
+
+        function getProgress(subtasks) {
+            if (!subtasks || subtasks.length === 0) return 0;
+            const done = subtasks.filter(s => s.done).length;
+            return Math.round((done / subtasks.length) * 100);
+        }
+
+        function createTaskCard(issue) {
+            const status = getStatusFromLabels(issue.labels);
+            const priority = getPriorityFromLabels(issue.labels);
+            const project = getProjectFromLabels(issue.labels);
+            const subtasks = parseSubtasks(issue.body);
+            const progress = getProgress(subtasks);
+            const priorityClass = PRIORITY_CLASS[priority] || 'priority-medium';
+            
+            // Extract description (first paragraph before subtasks)
+            let desc = '';
+            if (issue.body) {
+                const lines = issue.body.split('\n');
+                for (const line of lines) {
+                    if (line.includes('**Подзадачи:**') || line.includes('**DoD:**')) break;
+                    if (line.trim() && !line.startsWith('#')) {
+                        desc = line.trim();
+                        break;
+                    }
+                }
+            }
             
             return `
-                <div class="task-card ${task.status}">
-                    <div class="task-title">${task.title}</div>
+                <a href="${issue.html_url}" target="_blank" class="task-card ${status}">
+                    <div class="task-title">${issue.title}</div>
                     <div class="task-meta">
-                        <span class="badge ${priorityClass}">${task.priority}</span>
-                        <span class="badge project-badge">${task.project}</span>
+                        <span class="badge ${priorityClass}">${priority}</span>
+                        <span class="badge project-badge">${project}</span>
                     </div>
-                    <div class="task-desc">${task.description}</div>
+                    <div class="task-desc">${desc}</div>
                     <div class="task-progress">
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress}%"></div>
                         </div>
                         <div class="progress-text">${progress}%</div>
                     </div>
-                </div>
+                    <span class="edit-btn">✏️ Редактировать на GitHub</span>
+                </a>
             `;
         }
 
-        function renderDashboard(tasks) {
+        function renderDashboard(issues) {
             const columns = document.getElementById('columns');
             const stats = {
-                total: tasks.length,
-                inProgress: tasks.filter(t => t.status === 'in_progress').length,
-                critical: tasks.filter(t => t.priority === 'critical').length,
-                done: tasks.filter(t => t.status === 'done').length
+                total: issues.length,
+                inProgress: issues.filter(i => getStatusFromLabels(i.labels) === 'in_progress').length,
+                critical: issues.filter(i => getPriorityFromLabels(i.labels) === 'critical').length,
+                done: issues.filter(i => getStatusFromLabels(i.labels) === 'done').length
             };
 
             document.getElementById('totalTasks').textContent = stats.total;
@@ -258,39 +345,39 @@
 
             let html = '';
             for (const [status, config] of Object.entries(STATUS_CONFIG)) {
-                const statusTasks = tasks.filter(t => t.status === status);
+                const statusIssues = issues.filter(i => getStatusFromLabels(i.labels) === status);
                 html += `
                     <div class="column">
                         <div class="column-header" style="border-color: ${config.color}">
                             <span>${config.icon}</span>
                             <h2 style="color: ${config.color}">${config.title}</h2>
-                            <span class="count">${statusTasks.length}</span>
+                            <span class="count">${statusIssues.length}</span>
                         </div>
-                        ${statusTasks.map(task => createTaskCard(task)).join('')}
+                        ${statusIssues.map(issue => createTaskCard(issue)).join('')}
                     </div>
                 `;
             }
             columns.innerHTML = html;
         }
 
-        async function loadTasks() {
+        async function loadIssues() {
             try {
-                const response = await fetch('data/tasks.json');
-                if (!response.ok) throw new Error('Failed to load tasks');
-                const tasks = await response.json();
-                renderDashboard(tasks);
+                const response = await fetch(`https://api.github.com/repos/${REPO}/issues?state=open`);
+                if (!response.ok) throw new Error('Failed to load issues');
+                const issues = await response.json();
+                renderDashboard(issues);
             } catch (error) {
                 document.getElementById('columns').innerHTML = `
                     <div class="error">
                         Ошибка загрузки: ${error.message}<br>
-                        Убедитесь, что файл data/tasks.json существует.
+                        Проверьте подключение к интернету.
                     </div>
                 `;
             }
         }
 
-        loadTasks();
-        setInterval(loadTasks, 30000);
+        loadIssues();
+        setInterval(loadIssues, 60000); // Refresh every minute
     </script>
 </body>
 </html>
