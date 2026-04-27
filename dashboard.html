@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LADO BRAIN — Task Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            border: 1px solid #2a2a4a;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #888;
+            font-size: 14px;
+        }
+        .stats {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #1a1a2e;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid #2a2a4a;
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+        .columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .column {
+            background: #1a1a2e;
+            border-radius: 12px;
+            border: 1px solid #2a2a4a;
+            padding: 15px;
+        }
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid;
+        }
+        .column-header h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .column-header .count {
+            background: rgba(255,255,255,0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .task-card {
+            background: #0f0f1a;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 3px solid;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .task-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+        .task-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        .priority-critical { background: #ff4444; color: #fff; }
+        .priority-high { background: #ff8844; color: #fff; }
+        .priority-medium { background: #ffbb33; color: #000; }
+        .priority-low { background: #888; color: #fff; }
+        .project-badge {
+            background: #2a2a4a;
+            color: #aaa;
+        }
+        .task-desc {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        .task-progress {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: #2a2a4a;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #4a9eff;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 11px;
+            color: #666;
+            min-width: 35px;
+            text-align: right;
+        }
+        .backlog { border-color: #666; }
+        .in_progress { border-color: #4a9eff; }
+        .review { border-color: #ffbb33; }
+        .done { border-color: #44ff88; }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LADO BRAIN</h1>
+        <p>Task & Project Management Dashboard</p>
+    </div>
+
+    <div class="stats" id="stats">
+        <div class="stat-card">
+            <div class="stat-number" id="totalTasks">0</div>
+            <div class="stat-label">Всего задач</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="inProgress">0</div>
+            <div class="stat-label">В работе</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="critical">0</div>
+            <div class="stat-label">Критичных</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" id="done">0</div>
+            <div class="stat-label">Готово</div>
+        </div>
+    </div>
+
+    <div class="columns" id="columns">
+        <div class="loading">Загрузка задач...</div>
+    </div>
+
+    <script>
+        const STATUS_CONFIG = {
+            backlog: { title: 'Backlog', color: '#666', icon: '📋' },
+            in_progress: { title: 'In Progress', color: '#4a9eff', icon: '⚡' },
+            review: { title: 'Review', color: '#ffbb33', icon: '👀' },
+            done: { title: 'Done', color: '#44ff88', icon: '✅' }
+        };
+
+        const PRIORITY_CLASS = {
+            critical: 'priority-critical',
+            high: 'priority-high',
+            medium: 'priority-medium',
+            low: 'priority-low'
+        };
+
+        function getProgress(task) {
+            if (!task.subtasks || task.subtasks.length === 0) return 0;
+            const done = task.subtasks.filter(s => s.done).length;
+            return Math.round((done / task.subtasks.length) * 100);
+        }
+
+        function createTaskCard(task) {
+            const progress = getProgress(task);
+            const priorityClass = PRIORITY_CLASS[task.priority] || 'priority-medium';
+            
+            return `
+                <div class="task-card ${task.status}">
+                    <div class="task-title">${task.title}</div>
+                    <div class="task-meta">
+                        <span class="badge ${priorityClass}">${task.priority}</span>
+                        <span class="badge project-badge">${task.project}</span>
+                    </div>
+                    <div class="task-desc">${task.description}</div>
+                    <div class="task-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="progress-text">${progress}%</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDashboard(tasks) {
+            const columns = document.getElementById('columns');
+            const stats = {
+                total: tasks.length,
+                inProgress: tasks.filter(t => t.status === 'in_progress').length,
+                critical: tasks.filter(t => t.priority === 'critical').length,
+                done: tasks.filter(t => t.status === 'done').length
+            };
+
+            document.getElementById('totalTasks').textContent = stats.total;
+            document.getElementById('inProgress').textContent = stats.inProgress;
+            document.getElementById('critical').textContent = stats.critical;
+            document.getElementById('done').textContent = stats.done;
+
+            let html = '';
+            for (const [status, config] of Object.entries(STATUS_CONFIG)) {
+                const statusTasks = tasks.filter(t => t.status === status);
+                html += `
+                    <div class="column">
+                        <div class="column-header" style="border-color: ${config.color}">
+                            <span>${config.icon}</span>
+                            <h2 style="color: ${config.color}">${config.title}</h2>
+                            <span class="count">${statusTasks.length}</span>
+                        </div>
+                        ${statusTasks.map(task => createTaskCard(task)).join('')}
+                    </div>
+                `;
+            }
+            columns.innerHTML = html;
+        }
+
+        async function loadTasks() {
+            try {
+                const response = await fetch('data/tasks.json');
+                if (!response.ok) throw new Error('Failed to load tasks');
+                const tasks = await response.json();
+                renderDashboard(tasks);
+            } catch (error) {
+                document.getElementById('columns').innerHTML = `
+                    <div class="error">
+                        Ошибка загрузки: ${error.message}<br>
+                        Убедитесь, что файл data/tasks.json существует.
+                    </div>
+                `;
+            }
+        }
+
+        loadTasks();
+        setInterval(loadTasks, 30000);
+    </script>
+</body>
+</html>

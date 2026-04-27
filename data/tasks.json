@@ -1,0 +1,115 @@
+[
+  {
+    "id": "task_001",
+    "title": "MyCityQuest — запустить AR-игру в Пятигорске",
+    "description": "Критический дедлайн: 1 мая 2026. Фазы 1-2 просрочены. Нужно срочно завершить разработку и запустить.",
+    "status": "in_progress",
+    "priority": "critical",
+    "project": "MyCityQuest",
+    "subtasks": [
+      {"id": "sub_001", "title": "Завершить фазу 1 (AR-разметка)", "done": false},
+      {"id": "sub_002", "title": "Завершить фазу 2 (игровая логика)", "done": false},
+      {"id": "sub_003", "title": "Запустить фазу 3 (тестирование)", "done": false},
+      {"id": "sub_004", "title": "Публикация в App Store / Google Play", "done": false}
+    ],
+    "dod": "Игра доступна для скачивания, первые 100 пользователей",
+    "comments": []
+  },
+  {
+    "id": "task_002",
+    "title": "LadoPremium — решить проблему с водоотведением",
+    "description": "Кисловодск 'Сергей и Мария'. Блокер 4+ недели. Нужно срочно решить с подрядчиками.",
+    "status": "backlog",
+    "priority": "high",
+    "project": "LadoPremium",
+    "subtasks": [
+      {"id": "sub_005", "title": "Проверить статус у подрядчиков", "done": false},
+      {"id": "sub_006", "title": "Найти альтернативных подрядчиков", "done": false},
+      {"id": "sub_007", "title": "Составить план работ", "done": false}
+    ],
+    "dod": "Подрядчик начал работы, сроки согласованы",
+    "comments": []
+  },
+  {
+    "id": "task_003",
+    "title": "LadoDesign — реконцепция на премиальные интерьеры",
+    "description": "Перейти от стандартных к премиальным интерьерам. Wabi-Sabi стиль.",
+    "status": "backlog",
+    "priority": "medium",
+    "project": "LadoDesign",
+    "subtasks": [
+      {"id": "sub_008", "title": "Создать 3 варианта концепции", "done": false},
+      {"id": "sub_009", "title": "Презентация для клиентов", "done": false}
+    ],
+    "dod": "Утверждена новая концепция, первый клиент",
+    "comments": []
+  },
+  {
+    "id": "task_004",
+    "title": "LadoCafe — ресторан 312",
+    "description": "Запуск ресторана. Нужен бизнес-план и дизайн.",
+    "status": "backlog",
+    "priority": "medium",
+    "project": "LadoCafe",
+    "subtasks": [
+      {"id": "sub_010", "title": "Бизнес-план", "done": false},
+      {"id": "sub_011", "title": "Дизайн интерьера", "done": false}
+    ],
+    "dod": "Утвержден бизнес-план, начало ремонта",
+    "comments": []
+  },
+  {
+    "id": "task_005",
+    "title": "Kazantip/Dreemz — Phase 1 Signal",
+    "description": "Фестивальное направление. Начальная фаза.",
+    "status": "backlog",
+    "priority": "low",
+    "project": "Kazantip",
+    "subtasks": [
+      {"id": "sub_012", "title": "Исследование рынка", "done": false},
+      {"id": "sub_013", "title": "Контакты с организаторами", "done": false}
+    ],
+    "dod": "Подписан договор или письмо о намерениях",
+    "comments": []
+  },
+  {
+    "id": "task_006",
+    "title": "HeyEye — AI Agency/Lab",
+    "description": "Создание AI-агентства для внешних клиентов.",
+    "status": "backlog",
+    "priority": "low",
+    "project": "HeyEye",
+    "subtasks": [
+      {"id": "sub_014", "title": "Определить услуги и цены", "done": false},
+      {"id": "sub_015", "title": "Создать сайт-портфолио", "done": false}
+    ],
+    "dod": "Первый платный клиент",
+    "comments": []
+  },
+  {
+    "id": "task_007",
+    "title": "Tripy — Travel planner",
+    "description": "Планировщик путешествий. Концепция.",
+    "status": "backlog",
+    "priority": "low",
+    "project": "Tripy",
+    "subtasks": [
+      {"id": "sub_016", "title": "MVP концепция", "done": false}
+    ],
+    "dod": "Работающий прототип",
+    "comments": []
+  },
+  {
+    "id": "task_008",
+    "title": "LadoArchitects — архитектурное бюро",
+    "description": "Архитектурное направление Lado Empire.",
+    "status": "backlog",
+    "priority": "low",
+    "project": "LadoArchitects",
+    "subtasks": [
+      {"id": "sub_017", "title": "Команда и партнеры", "done": false}
+    ],
+    "dod": "Первый архитектурный проект",
+    "comments": []
+  }
+]
